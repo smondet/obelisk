@@ -15,6 +15,7 @@ library
     , binary
     , bytestring
     , obelisk-cliapp
+    , obelisk-run
     , containers
     , data-default
     , directory

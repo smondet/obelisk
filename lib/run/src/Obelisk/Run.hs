@@ -84,6 +84,10 @@ run port serveStaticAsset backend frontend = do
       let conf = defRunConfig { _runConfig_redirectPort = port }
       runWidget conf frontend validFullEncoder `finally` killThread backendTid
 
+run_stringsCall :: String -> String -> String -> String -> [String]
+run_stringsCall port serve backend frontend =
+  ["Obelisk.Run.run", show port, serve, backend, frontend]
+
 -- Convenience wrapper to handle path segments for 'Snap.serveAsset'
 runServeAsset :: FilePath -> [Text] -> Snap ()
 runServeAsset rootPath = Snap.serveAsset "" rootPath . T.unpack . T.intercalate "/"

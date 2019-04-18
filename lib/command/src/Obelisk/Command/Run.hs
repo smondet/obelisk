@@ -40,6 +40,8 @@ import Obelisk.CliApp
   , readProcessAndLogStderr, runCli)
 import Obelisk.Command.Project (inProjectShell, withProjectRoot)
 
+import qualified Obelisk.Run as ObeRun
+
 data CabalPackageInfo = CabalPackageInfo
   { _cabalPackageInfo_packageRoot :: FilePath
   , _cabalPackageInfo_sourceDirs :: NE.NonEmpty FilePath
@@ -75,13 +77,12 @@ run = do
         else readProcessAndLogStderr Debug $
           proc "nix" ["eval", "-f", root, "passthru.staticFilesImpure", "--raw"]
     putLog Debug $ "Assets impurely loaded from: " <> assets
-    runGhcid dotGhciPath $ Just $ unwords
-      [ "Obelisk.Run.run"
-      , show freePort
-      , "(runServeAsset " ++ show assets ++ ")"
-      , "Backend.backend"
-      , "Frontend.frontend"
-      ]
+    runGhcid dotGhciPath $ Just $ unwords $
+      ObeRun.run_stringsCall
+        (show freePort)
+        ("(runServeAsset " ++ show assets ++ ")")
+        "Backend.backend"
+        "Frontend.frontend"
 
 runRepl :: MonadObelisk m => m ()
 runRepl = do
